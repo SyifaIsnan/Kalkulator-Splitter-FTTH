@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kalkulator Splitter FTTH</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>Kalkulator Splitter FTTH</h2>
+
+<label>Input SFP (1 - 10)</label>
+<input type="number" id="sfpInput" min="1" max="10" step="0.1">
+
+<div class="button-row">
+    <button class="primary" onclick="hitung()">Hitung</button>
+    <button class="reset-btn" onclick="resetData()">Reset</button>
+</div>
+
+<div id="historyContainer"></div>
+<div id="tableContainer"></div>
+
+</div>
+
+<script>
+
+const dataSplitter = [
+    { ratio: "1:2", nilai: -4 },
+    { ratio: "1:4", nilai: -8 },
+    { ratio: "1:8", nilai: -10 },
+    { ratio: "1:16", nilai: -14 }
+];
+
+const batasMaksimalRedaman = -23;
+
+/* =========================
+   LOAD DATA DARI STORAGE
+========================= */
+let riwayatRedaman = JSON.parse(localStorage.getItem("riwayatRedaman")) || [];
+let indexAktif = parseInt(localStorage.getItem("indexAktif")) || 0;
+
+/* =========================
+   SIMPAN KE STORAGE
+========================= */
+function simpanData() {
+    localStorage.setItem("riwayatRedaman", JSON.stringify(riwayatRedaman));
+    localStorage.setItem("indexAktif", indexAktif);
+}
+
+/* =========================
+   HITUNG AWAL
+========================= */
+function hitung() {
+    const sfp = parseFloat(document.getElementById("sfpInput").value);
+
+    if (sfp >= 1 && sfp <= 10) {
+        riwayatRedaman = [sfp];
+        indexAktif = 0;
+        simpanData();
+        render();
+    } else {
+        alert("Input harus antara 1 - 10");
+    }
+}
+
+/* =========================
+   TURUNKAN REDAMAN
+========================= */
+function turunkan(nilaiBaru) {
+    riwayatRedaman.push(nilaiBaru);
+    indexAktif = riwayatRedaman.length - 1;
+    simpanData();
+    render();
+}
+
+/* =========================
+   PILIH RIWAYAT
+========================= */
+function pilih(index) {
+    if (confirm("Yakin kembali ke redaman ini?")) {
+        riwayatRedaman = riwayatRedaman.slice(0, index + 1);
+        indexAktif = index;
+        simpanData();
+        render();
+    }
+}
+
+/* =========================
+   RESET
+========================= */
+function resetData() {
+    if (confirm("Anda yakin mau reset semua redaman?")) {
+        riwayatRedaman = [];
+        indexAktif = 0;
+        localStorage.removeItem("riwayatRedaman");
+        localStorage.removeItem("indexAktif");
+        document.getElementById("historyContainer").innerHTML = "";
+        document.getElementById("tableContainer").innerHTML = "";
+        document.getElementById("sfpInput").value = "";
+    }
+}
+
+/* =========================
+   RENDER
+========================= */
+function render() {
+    renderHistory();
+    renderTable();
+}
+
+function renderHistory() {
+    if (riwayatRedaman.length === 0) return;
+
+    let html = `<div class="history"><strong>Riwayat Redaman:</strong><ul>`;
+    riwayatRedaman.forEach((nilai, index) => {
+        html += `
+        <li>
+            <button onclick="pilih(${index})">
+                Redaman ${index} : ${nilai} dB
+            </button>
+        </li>`;
+    });
+    html += "</ul></div>";
+
+    document.getElementById("historyContainer").innerHTML = html;
+}
+
+function renderTable() {
+    if (riwayatRedaman.length === 0) return;
+
+    const nilaiAktif = riwayatRedaman[indexAktif];
+
+    let html = `
+    <table>
+    <tr>
+        <th>SFP</th>
+        <th>Splitter</th>
+        <th>Redaman</th>
+        <th>Aksi</th>
+    </tr>`;
+
+    dataSplitter.forEach(data => {
+
+        const hasil = parseFloat((nilaiAktif + data.nilai).toFixed(2));
+        const melebihi = hasil <= batasMaksimalRedaman;
+
+        html += `
+        <tr>
+            <td>${nilaiAktif}</td>
+            <td>${data.ratio}</td>
+            <td class="${melebihi ? 'danger' : ''}">
+                ${hasil} dB ${melebihi ? "⚠ Melebihi batas" : ""}
+            </td>
+            <td>
+                <button class="primary" onclick="turunkan(${hasil})">
+                    Turunkan
+                </button>
+            </td>
+        </tr>`;
+    });
+
+    html += "</table>";
+
+    document.getElementById("tableContainer").innerHTML = html;
+}
+
+/* =========================
+   AUTO LOAD SAAT REFRESH
+========================= */
+if (riwayatRedaman.length > 0) {
+    render();
+}
+
+</script>
+
+</body>
+</html>

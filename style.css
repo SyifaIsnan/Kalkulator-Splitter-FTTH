@@ -1,0 +1,122 @@
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    background: #ffffff;
+    width: 800px;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 8px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+button {
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.button-row button {
+    width: 100%;
+}
+
+.history {
+    margin-top: 25px;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+.history ul {
+    list-style: none;
+    padding: 0;
+}
+
+.history li {
+    margin-bottom: 8px;
+}
+
+.history button {
+    background: #e0f2fe;
+    border: 1px solid #bfdbfe;
+    padding: 6px 12px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+th {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    padding: 14px;
+}
+
+td {
+    padding: 14px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.danger {
+    color: #dc2626;
+    font-weight: 700;
+}
